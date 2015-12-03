@@ -1,1 +1,92 @@
-particlesJS("particles-js", {"particles":{"number":{"value":160,"density":{"enable":true,"value_area":800}},"color":{"value":"#ffffff"},"shape":{"type":"circle","stroke":{"width":0,"color":"#000000"},"polygon":{"nb_sides":5},"image":{"src":"img/github.svg","width":100,"height":100}},"opacity":{"value":1,"random":true,"anim":{"enable":true,"speed":1,"opacity_min":0,"sync":false}},"size":{"value":3,"random":true,"anim":{"enable":false,"speed":4,"size_min":0.3,"sync":false}},"line_linked":{"enable":false,"distance":150,"color":"#ffffff","opacity":0.4,"width":1},"move":{"enable":true,"speed":1,"direction":"none","random":true,"straight":false,"out_mode":"out","bounce":false,"attract":{"enable":false,"rotateX":600,"rotateY":600}}},"interactivity":{"detect_on":"canvas","events":{"onhover":{"enable":false,"mode":"bubble"},"onclick":{"enable":false,"mode":"repulse"},"resize":true},"modes":{"grab":{"distance":400,"line_linked":{"opacity":1}},"bubble":{"distance":250,"size":0,"duration":2,"opacity":0,"speed":3},"repulse":{"distance":400,"duration":0.4},"push":{"particles_nb":4},"remove":{"particles_nb":2}}},"retina_detect":true});var count_particles, stats, update; stats = new Stats; stats.setMode(0); stats.domElement.style.position = 'absolute'; stats.domElement.style.left = '0px'; stats.domElement.style.top = '0px'; document.body.appendChild(stats.domElement); count_particles = document.querySelector('.js-count-particles'); update = function() { stats.begin(); stats.end(); if (window.pJSDom[0].pJS.particles && window.pJSDom[0].pJS.particles.array) { count_particles.innerText = window.pJSDom[0].pJS.particles.array.length; } requestAnimationFrame(update); }; requestAnimationFrame(update);;
+/*
+ * Stellar Cloud
+ * A Three.js Procedural Point Cloud System
+ * (c) 2015 Stelatech.com All Rights Reserved.
+ */
+(function(window, THREE) {
+  "use strict";
+  var renderer, resizer, postprocessing, camera, scene, clock, mesh;
+
+  /**
+   * Start Three.js Rendering Engine.
+   */
+  function start() {
+    //Create Engine Components
+    renderer = new THREE.WebGLRenderer();
+    camera = new THREE.PerspectiveCamera(45, 1.6, .001, 100);
+    scene = new THREE.Scene();
+    clock = new THREE.Clock();
+    resizer = new THREE.WindowResizer(renderer, camera, 1.6, composer);
+    resizer.trigger();
+    //Camera
+    camera.position.set(.33, .25, -.25);
+    camera.lookAt(scene.position);
+    scene.add(camera);
+
+    //Canvas
+    var container = document.getElementById('threejs');
+    container.appendChild(renderer.domElement);
+
+    //Post-Process
+    postprocessing = {};
+    var composer = new THREE.EffectComposer(renderer);
+    composer.addPass(new THREE.RenderPass(scene, camera));
+    var stelaEffect = new THREE.ShaderPass(THREE.StelaGradientShader);
+    composer.addPass(stelaEffect);
+    var bokehPass = new THREE.BokehPass(scene, camera, {
+      focus: 1.0,
+      aperture: 0.01,
+      maxblur: 1.0,
+      width: resizer.w,
+      height: resizer.h
+    });
+    composer.addPass(bokehPass);
+    bokehPass.renderToScreen = true;
+    postprocessing.composer = composer;
+    postprocessing.stela = stelaEffect;
+    
+    //Extra Components
+    mesh = new THREE.HCloud(4);
+    scene.add(mesh);
+  }
+
+  /**
+   * Animate Engine Objects.
+   */
+  function animate() {
+    mesh.rotation.y = clock.getElapsedTime() * 0.015;
+    mesh.material.uniforms.time.value = 0.015 * clock.getElapsedTime();
+    postprocessing.stela.uniforms.time.value = clock.getElapsedTime();
+    postprocessing.composer.render();
+    requestAnimationFrame(animate);
+  }
+
+  /**
+   * Display GUI Controls.
+   */
+  function debug() {
+    var debugContainer = document.getElementById("debug");
+    var gui = new dat.GUI({
+        autoPlace: false
+      }),
+      guiData = {
+        h: 4
+      },
+      guiControl = gui.add(guiData, 'h', 2, 10).step(1);
+
+    guiControl.onFinishChange(function(value) {
+      scene.remove(mesh);
+      mesh = new THREE.HCloud(value);
+      scene.add(mesh);
+    });
+    gui.domElement.style.position = 'absolute';
+    gui.domElement.style.bottom = '-28px';
+    gui.domElement.style.left = "0px";
+    debugContainer.appendChild(gui.domElement);
+  }
+
+  //Start App
+  start();
+  animate();
+  debug();
+})(window, THREE);
