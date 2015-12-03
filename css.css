@@ -1,1 +1,113 @@
-/* ---- reset ---- */ body{ margin:0; font:normal 75% Arial, Helvetica, sans-serif; } canvas{ display: block; vertical-align: bottom; } /* ---- particles.js container ---- */ #particles-js{ position:absolute; width: 100%; height: 100%; background-color: #232741; background-image: url("https://static.wixstatic.com/media/3b0299_5e2b90b9cbbe4fa5a2884863d4c8924d.png/v1/fill/w_419,h_378,al_c/3b0299_5e2b90b9cbbe4fa5a2884863d4c8924d.png"); background-repeat: no-repeat; background-size: 20%; background-position: 50% 50%; } /* ---- stats.js ---- */ .count-particles{ background: #000022; position: absolute; top: 48px; left: 0; width: 80px; color: #13E8E9; font-size: .8em; text-align: left; text-indent: 4px; line-height: 14px; padding-bottom: 2px; font-family: Helvetica, Arial, sans-serif; font-weight: bold; } .js-count-particles{ font-size: 1.1em; } #stats, .count-particles{ -webkit-user-select: none; margin-top: 5px; margin-left: 5px; } #stats{ border-radius: 3px 3px 0 0; overflow: hidden; } .count-particles{ border-radius: 0 0 3px 3px; }
+@import "compass"; 
+/*****************************************
+ * Standard HTML
+*****************************************/
+html, body {
+	margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  font-family: 'Open Sans', sans-serif;
+  color: #fff;
+  z-index: -2;
+}
+
+html {
+    @include background-image(
+    radial-gradient(circle, rgba(0,0,0,0) 33%, rgba(0, 0, 0, 0.2) 100%),
+      linear-gradient(55deg, #7018f2, #bd368f));
+}
+
+input {
+    border: 0 none;
+    background: rgba(0, 0, 0, 0);
+    color: #fff;
+}
+
+ul {
+    padding: 0;
+    margin: 0;
+    font-size: 14px;
+    list-style: none outside none;
+}
+
+a {
+    @include user-select(none);
+    text-decoration: none;
+    cursor: pointer;
+    transition: color 0.3s;
+    &:link, &:visited {
+        color: #fff;
+    }
+    &:hover {
+        color: #70c0e8;
+    }
+    &:active {
+        color: #2e89c0;
+    }
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-family: 'Open Sans', sans-serif;
+    font-style: normal;
+    font-weight: 100;
+    margin: 0;
+    padding: 0;
+}
+
+/*****************************************
+ * Core Styles
+ ****************************************/
+.logo {
+    display: flex;
+    text-align: center;
+    justify-content: center;
+    align-items: center;
+    flex-direction: row;
+  img {
+      margin: 0 16px;
+  }
+}
+
+.stela-logo {
+  display: block;
+  width: 360px;
+  height: 240px;
+  z-index: 10;
+  Position: relative;
+  left:60px;
+  background: url('https://static.wixstatic.com/media/3b0299_5e2b90b9cbbe4fa5a2884863d4c8924d.png/v1/fill/w_419,h_378,al_c/3b0299_5e2b90b9cbbe4fa5a2884863d4c8924d.png') no-repeat scroll center center / contain;
+  transform: translateX(32px);
+}
+
+.stela-logotype {
+  display: block;
+  width: 100%;
+  height: 100%;
+  z-index: 10;
+  background: url('https://static.wixstatic.com/media/3b0299_a1025ede9bbb48bdaff12ab71f20cd1a.png/v1/fill/w_600,h_359,al_c,usm_0.50_1.20_0.00/3b0299_a1025ede9bbb48bdaff12ab71f20cd1a.png') no-repeat center;
+}
+
+.stela-section {
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+}
+canvas {
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: -1;
+}
+
+@media screen and (max-width: 640px) {
+  .logo .stela-logotype {
+      transform: translateX(0px);
+    display: none;
+  }
+}
